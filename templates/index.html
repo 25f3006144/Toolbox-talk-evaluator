@@ -1,0 +1,1409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolboxAI | Safety Intelligence Platform</title>
+
+    <style>
+        :root {
+            --navy: #111d35;
+            --navy-light: #293958;
+            --blue: #4967ff;
+            --blue-light: #edf0ff;
+            --bg: #f3f6fb;
+            --white: #ffffff;
+            --text: #18243b;
+            --muted: #71809a;
+            --border: #e4eaf3;
+            --green: #087f5b;
+            --green-bg: #e8f8f0;
+            --red: #b42336;
+            --red-bg: #fff0f1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 24px;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: "Segoe UI", Arial, sans-serif;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 260px;
+            padding: 24px 14px;
+            background: var(--navy);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .brand {
+            font-size: 26px;
+            font-weight: 850;
+            margin: 0 0 8px;
+            letter-spacing: -1px;
+        }
+
+        .brand span {
+            color: #8fa3ff;
+        }
+
+        .tagline {
+            color: #b7c4df;
+            font-size: 13px;
+            margin-bottom: 35px;
+        }
+
+        .nav-label {
+            color: #8fa3c9;
+            font-size: 11px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            margin: 0 10px 12px;
+        }
+
+        .nav {
+            display: grid;
+            gap: 8px;
+        }
+
+        .nav a {
+            padding: 15px 12px;
+            border-radius: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 14px;
+            color: #edf2ff;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background: var(--navy-light);
+        }
+
+        .nav-icon {
+            color: #9eb0ff;
+            width: 18px;
+            text-align: center;
+        }
+
+        .system-label {
+            margin-top: 28px;
+        }
+
+        .sidebar-note {
+            margin-top: auto;
+            padding: 16px;
+            border: 1px solid #344563;
+            border-radius: 14px;
+            color: #c5d1e7;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .sidebar-note strong {
+            display: block;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        main {
+            margin-left: 260px;
+            padding: 30px clamp(20px, 4vw, 60px) 60px;
+            max-width: 1700px;
+        }
+
+        .topline {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .eyebrow {
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .workspace {
+            background: var(--green-bg);
+            color: var(--green);
+            padding: 12px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 750;
+        }
+
+        h1 {
+            font-size: clamp(30px, 3vw, 43px);
+            letter-spacing: -1.4px;
+            margin: 15px 0 10px;
+        }
+
+        h2 {
+            font-size: 21px;
+            margin: 0 0 10px;
+        }
+
+        h3 {
+            font-size: 16px;
+            margin: 0 0 8px;
+        }
+
+        .intro,
+        .subtext {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .intro {
+            margin-bottom: 28px;
+        }
+
+        .subtext {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .panel,
+        .metric {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 10px 30px rgba(25, 42, 76, 0.05);
+        }
+
+        .panel {
+            padding: 26px;
+            margin-bottom: 24px;
+            scroll-margin-top: 20px;
+        }
+
+        .panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .pill {
+            display: inline-block;
+            border-radius: 30px;
+            background: #f0f3f9;
+            color: #52617b;
+            padding: 7px 10px;
+            font-size: 11px;
+            font-weight: 750;
+            white-space: nowrap;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .metric {
+            padding: 20px;
+            min-width: 0;
+        }
+
+        .metric-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .metric-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: var(--blue-light);
+            color: var(--blue);
+            display: grid;
+            place-items: center;
+            font-size: 17px;
+        }
+
+        .metric-value {
+            font-size: 26px;
+            font-weight: 850;
+            margin: 15px 0 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .metric-note,
+        .hint {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .mini-track,
+        .track {
+            background: #e8edf7;
+            border-radius: 30px;
+            overflow: hidden;
+        }
+
+        .mini-track {
+            height: 5px;
+            margin-top: 13px;
+        }
+
+        .mini-track span {
+            display: block;
+            height: 100%;
+            width: 0;
+            background: var(--blue);
+            transition: width 0.3s;
+        }
+
+        .status {
+            display: none;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .status.show {
+            display: block;
+        }
+
+        .status.success {
+            background: var(--green-bg);
+            color: var(--green);
+            border: 1px solid #b8ead1;
+        }
+
+        .status.error {
+            background: var(--red-bg);
+            color: var(--red);
+            border: 1px solid #ffc6cb;
+        }
+
+        .status.info {
+            background: #eef3ff;
+            color: #3047b9;
+            border: 1px solid #cdd8ff;
+        }
+
+        .upload-zone {
+            margin-top: 22px;
+            padding: 30px 20px;
+            border: 2px dashed #c8d2ff;
+            border-radius: 16px;
+            background: #f9faff;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--blue);
+            background: #f0f3ff;
+        }
+
+        .upload-icon {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 16px;
+            border-radius: 17px;
+            background: var(--blue-light);
+            color: var(--blue);
+            display: grid;
+            place-items: center;
+            font-size: 28px;
+        }
+
+        .upload-zone strong {
+            display: block;
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .upload-zone small {
+            display: block;
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .file-name {
+            margin-top: 12px;
+            color: #34476b;
+            font-size: 13px;
+            overflow-wrap: anywhere;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 11px;
+            padding: 13px 18px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-weight: 750;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #354fe8;
+        }
+
+        .btn-secondary {
+            background: #f1f4fa;
+            color: #34415c;
+            border: 1px solid var(--border);
+        }
+
+        .btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+        }
+
+        .progress-wrap {
+            display: none;
+            margin-top: 22px;
+        }
+
+        .progress-wrap.show {
+            display: block;
+        }
+
+        .progress-title {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 750;
+            margin-bottom: 10px;
+        }
+
+        .track {
+            height: 8px;
+        }
+
+        .track > div {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #4967ff, #8292ff);
+            border-radius: 30px;
+            transition: width 0.35s;
+        }
+
+        .stage-list {
+            display: grid;
+            gap: 9px;
+            margin-top: 14px;
+        }
+
+        .stage-item {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .stage-item.current {
+            color: var(--blue);
+            font-weight: 750;
+        }
+
+        .stage-item.complete {
+            color: var(--green);
+        }
+
+        .two-col {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 20px;
+        }
+
+        .evidence-box {
+            background: #f8faff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 17px;
+        }
+
+        .evidence-box p {
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.7;
+            margin: 7px 0 0;
+        }
+
+        .report-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 14px 0 18px;
+        }
+
+        .report-content {
+            line-height: 1.7;
+            font-size: 14px;
+            overflow-wrap: anywhere;
+        }
+
+        .report-content h1 {
+            font-size: 24px;
+            letter-spacing: normal;
+        }
+
+        .report-content h2 {
+            font-size: 19px;
+            margin-top: 24px;
+        }
+
+        .report-content h3 {
+            margin-top: 18px;
+        }
+
+        .report-content p,
+        .report-content li {
+            color: #42516a;
+        }
+
+        .report-content table {
+            border-collapse: collapse;
+            width: 100%;
+            display: block;
+            overflow-x: auto;
+            margin: 14px 0 20px;
+            font-size: 12px;
+        }
+
+        .report-content th,
+        .report-content td {
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            text-align: left;
+            min-width: 110px;
+        }
+
+        .report-content th {
+            background: #f4f6fc;
+        }
+
+        .report-content code {
+            background: #f0f3f9;
+            padding: 2px 5px;
+            border-radius: 5px;
+        }
+
+        .report-content blockquote {
+            border-left: 3px solid var(--blue);
+            padding: 5px 14px;
+            color: var(--muted);
+            background: #f8faff;
+        }
+
+        .empty {
+            border: 1px dashed #d4dcec;
+            background: #fafbfe;
+            border-radius: 13px;
+            padding: 22px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        details {
+            margin-top: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 13px;
+        }
+
+        summary {
+            font-size: 13px;
+            font-weight: 750;
+            cursor: pointer;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            background: var(--navy);
+            color: #e4eaff;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 11px;
+            line-height: 1.6;
+            max-height: 380px;
+            overflow: auto;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 32px;
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        @media (max-width: 1100px) {
+            .sidebar {
+                width: 220px;
+            }
+
+            main {
+                margin-left: 220px;
+                padding: 25px;
+            }
+
+            .metrics {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                position: relative;
+                width: auto;
+                padding: 16px;
+            }
+
+            .tagline {
+                margin-bottom: 16px;
+            }
+
+            .nav {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .nav a {
+                padding: 11px;
+                font-size: 12px;
+            }
+
+            .nav-label,
+            .system-label,
+            .sidebar-note {
+                display: none;
+            }
+
+            main {
+                margin: 0;
+                padding: 22px 14px 40px;
+            }
+
+            .panel {
+                padding: 18px;
+            }
+
+            .metrics {
+                gap: 10px;
+            }
+
+            .metric {
+                padding: 14px;
+            }
+
+            .metric-value {
+                font-size: 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <a href="#dashboard" class="brand">Toolbox<span>AI</span></a>
+    <p class="tagline">Intelligent safety talk evaluation</p>
+
+    <p class="nav-label">Workspace</p>
+
+    <nav class="nav">
+        <a href="#dashboard" class="active" data-nav>▦ Dashboard</a>
+        <a href="#video-analysis" data-nav>◉ Video analysis</a>
+        <a href="#evaluation-report" data-nav>▤ Evaluation report</a>
+    </nav>
+
+    <p class="nav-label system-label">System</p>
+
+    <nav class="nav">
+        <a href="#pipeline-status" data-nav>✓ Python pipeline</a>
+    </nav>
+
+    <div class="sidebar-note">
+        <strong>Evidence-first evaluation</strong>
+        Results depend on video quality, transcript accuracy and validated scoring rules.
+    </div>
+</aside>
+
+<main>
+    <section id="dashboard">
+        <div class="topline">
+            <div class="eyebrow">Safety intelligence platform</div>
+            <div class="workspace">● Local workspace</div>
+        </div>
+
+        <h1>Evaluation dashboard</h1>
+        <p class="intro">
+            Turn a Toolbox Talk video into structured safety evidence and a report.
+        </p>
+    </section>
+
+    <div id="page-status" class="status" role="status" aria-live="polite"></div>
+
+    <section class="metrics">
+        <article class="metric">
+            <div class="metric-top">
+                Topic coverage <span class="metric-icon">◌</span>
+            </div>
+            <div class="metric-value" id="metric-coverage">Not available</div>
+            <div class="metric-note">Share of expected topics with evidence</div>
+            <div class="mini-track"><span id="coverage-bar"></span></div>
+        </article>
+
+        <article class="metric">
+            <div class="metric-top">
+                Topics detected <span class="metric-icon">⌕</span>
+            </div>
+            <div class="metric-value" id="metric-topics">Not available</div>
+            <div class="metric-note">Based on current topic-detection output</div>
+        </article>
+
+        <article class="metric">
+            <div class="metric-top">
+                Overall score <span class="metric-icon">◎</span>
+            </div>
+            <div class="metric-value" id="metric-score">Not validated</div>
+            <div class="metric-note">Overall scoring rules are not yet validated</div>
+        </article>
+
+        <article class="metric">
+            <div class="metric-top">
+                Video duration <span class="metric-icon">◷</span>
+            </div>
+            <div class="metric-value" id="metric-duration">See report</div>
+            <div class="metric-note">Extracted from pipeline parameters</div>
+        </article>
+    </section>
+
+    <section id="video-analysis" class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Analyze a Toolbox Talk</h2>
+                <p class="subtext">
+                    Upload a recording to run the existing video, audio, speech,
+                    computer-vision, extraction and scoring pipeline.
+                </p>
+            </div>
+            <span class="pill">MP4 · MOV · MKV</span>
+        </div>
+
+        <form id="upload-form">
+            <input
+                id="video-input"
+                type="file"
+                name="video"
+                accept=".mp4,.mov,.mkv,video/mp4,video/quicktime,video/x-matroska"
+                hidden
+            >
+
+            <div id="upload-zone" class="upload-zone" role="button" tabindex="0">
+                <div class="upload-icon">⇧</div>
+                <strong>Select your video</strong>
+                <small>Click to browse or drag and drop a video here</small>
+                <small>MP4, MOV or MKV · Maximum 500 MB</small>
+                <div id="file-name" class="file-name">No video selected</div>
+            </div>
+
+            <div class="actions">
+                <button id="analyze-button" class="btn btn-primary" type="submit">
+                    ▶ Run safety analysis
+                </button>
+
+                <button id="clear-button" class="btn btn-secondary" type="button">
+                    Clear selection
+                </button>
+
+                <span class="hint">Analysis may take a few minutes.</span>
+            </div>
+        </form>
+
+        <div id="progress-wrap" class="progress-wrap" aria-live="polite">
+            <div class="progress-title">
+                <span id="progress-label">Preparing analysis…</span>
+                <span id="elapsed-label">0 sec</span>
+            </div>
+
+            <div class="track">
+                <div id="progress-bar"></div>
+            </div>
+
+            <div id="stage-list" class="stage-list"></div>
+        </div>
+    </section>
+
+    <section id="pipeline-status" class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Python pipeline</h2>
+                <p class="subtext">
+                    Live status of the backend scripts producing the evaluation.
+                </p>
+            </div>
+            <span id="pipeline-pill" class="pill">Idle</span>
+        </div>
+
+        <div class="two-col">
+            <div class="evidence-box">
+                <h3 id="pipeline-current">Waiting for an analysis</h3>
+                <p id="pipeline-description">
+                    Upload a video and start the analysis to see progress.
+                </p>
+            </div>
+
+            <div class="evidence-box">
+                <h3>Evidence and scoring policy</h3>
+                <p>
+                    Keyword matches are evidence, not proof of understanding.
+                    A missing match means unknown, not automatically unsafe.
+                    The overall score remains unvalidated until scoring rules
+                    are verified.
+                </p>
+            </div>
+        </div>
+
+        <details>
+            <summary>View pipeline logs</summary>
+            <pre id="pipeline-logs">No pipeline logs yet.</pre>
+        </details>
+    </section>
+
+    <section id="evaluation-report" class="panel">
+        <div class="panel-head">
+            <div>
+                <h2>Evaluation report</h2>
+                <p class="subtext">
+                    A readable view of the generated Markdown report.
+                </p>
+            </div>
+            <span id="report-pill" class="pill">Waiting for report</span>
+        </div>
+
+        <div class="report-toolbar">
+            <span id="report-caption" class="hint">
+                The report will appear here after analysis.
+            </span>
+
+            <a class="btn btn-secondary" href="/download-report">
+                ↓ Download report
+            </a>
+        </div>
+
+        <div id="report-content" class="report-content">
+            <div class="empty">
+                No report loaded yet. Run an analysis or refresh this page.
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        ToolboxAI · Evidence-first safety evaluation · Local workspace<br>
+        Automated findings and computer-vision predictions should be reviewed by a human.
+    </footer>
+</main>
+
+<script>
+(() => {
+    const $ = (id) => document.getElementById(id);
+
+    const form = $("upload-form");
+    const input = $("video-input");
+    const zone = $("upload-zone");
+    const fileName = $("file-name");
+    const analyzeButton = $("analyze-button");
+    const clearButton = $("clear-button");
+    const statusBox = $("page-status");
+    const progressWrap = $("progress-wrap");
+    const progressBar = $("progress-bar");
+    const progressLabel = $("progress-label");
+    const elapsedLabel = $("elapsed-label");
+    const stageList = $("stage-list");
+
+    let selectedFile = null;
+    let polling = false;
+    let pollTimer = null;
+
+    function showStatus(message, kind = "info") {
+        statusBox.className = `status show ${kind}`;
+        statusBox.textContent = message;
+    }
+
+    function hideStatus() {
+        statusBox.className = "status";
+        statusBox.textContent = "";
+    }
+
+    function formatElapsed(seconds) {
+        if (seconds < 60) return `${seconds} sec`;
+        return `${Math.floor(seconds / 60)} min ${seconds % 60} sec`;
+    }
+
+    function setSelectedFile(file) {
+        if (!file) return;
+
+        const extension = file.name.includes(".")
+            ? file.name.split(".").pop().toLowerCase()
+            : "";
+
+        if (!["mp4", "mov", "mkv"].includes(extension)) {
+            showStatus("Choose an MP4, MOV or MKV video.", "error");
+            return;
+        }
+
+        if (file.size > 500 * 1024 * 1024) {
+            showStatus("The video exceeds the 500 MB upload limit.", "error");
+            return;
+        }
+
+        selectedFile = file;
+        fileName.textContent =
+            `${file.name} · ${(file.size / (1024 * 1024)).toFixed(1)} MB`;
+
+        hideStatus();
+    }
+
+    zone.addEventListener("click", () => input.click());
+
+    zone.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            input.click();
+        }
+    });
+
+    input.addEventListener("change", () => {
+        setSelectedFile(input.files[0]);
+    });
+
+    clearButton.addEventListener("click", () => {
+        if (polling) return;
+
+        selectedFile = null;
+        input.value = "";
+        fileName.textContent = "No video selected";
+        hideStatus();
+    });
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+        zone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            zone.classList.add("dragover");
+        });
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+        zone.addEventListener(eventName, (event) => {
+            event.preventDefault();
+            zone.classList.remove("dragover");
+        });
+    });
+
+    zone.addEventListener("drop", (event) => {
+        const file = event.dataTransfer.files[0];
+        if (file) setSelectedFile(file);
+    });
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        if (!selectedFile) {
+            showStatus("Please select a video before starting.", "error");
+            return;
+        }
+
+        if (polling) return;
+
+        const data = new FormData();
+        data.append("video", selectedFile, selectedFile.name);
+
+        analyzeButton.disabled = true;
+        clearButton.disabled = true;
+        analyzeButton.textContent = "Uploading video…";
+
+        progressWrap.classList.add("show");
+        progressBar.style.width = "0%";
+
+        showStatus("Uploading video and starting the pipeline…", "info");
+
+        try {
+            const response = await fetch("/analyze", {
+                method: "POST",
+                body: data
+            });
+
+            const result = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(
+                    result.error || `Upload failed (${response.status}).`
+                );
+            }
+
+            polling = true;
+            analyzeButton.textContent = "Analysis running…";
+
+            showStatus(
+                result.message || "Analysis started. Progress will appear below.",
+                "info"
+            );
+
+            await pollStatus();
+
+            if (polling) {
+                pollTimer = setInterval(pollStatus, 2500);
+            }
+        } catch (error) {
+            finishPolling();
+            showStatus(error.message || "Could not start the analysis.", "error");
+        }
+    });
+
+    async function pollStatus() {
+        try {
+            const response = await fetch("/api/status", {
+                cache: "no-store"
+            });
+
+            if (!response.ok) {
+                throw new Error("Could not read pipeline status.");
+            }
+
+            const status = await response.json();
+            renderStatus(status);
+
+            if (status.state === "done") {
+                finishPolling();
+                progressBar.style.width = "100%";
+
+                showStatus(
+                    "Analysis completed successfully. Results have been loaded.",
+                    "success"
+                );
+
+                await loadResults();
+            } else if (status.state === "error") {
+                finishPolling();
+
+                showStatus(
+                    status.error || "Analysis failed. Check the pipeline logs.",
+                    "error"
+                );
+
+                await loadResults();
+            }
+        } catch (error) {
+            $("pipeline-current").textContent = "Checking pipeline connection…";
+        }
+    }
+
+    function finishPolling() {
+        polling = false;
+
+        if (pollTimer) {
+            clearInterval(pollTimer);
+            pollTimer = null;
+        }
+
+        analyzeButton.disabled = false;
+        clearButton.disabled = false;
+        analyzeButton.textContent = "▶ Run safety analysis";
+    }
+
+    function renderStatus(status) {
+        const stages = Array.isArray(status.stages) ? status.stages : [];
+        const stage = Number(status.stage);
+
+        let percent = 0;
+
+        if (status.state === "done") {
+            percent = 100;
+        } else if (status.state === "running" && stages.length) {
+            percent = Math.max(
+                5,
+                Math.round((Math.max(0, stage) / stages.length) * 100)
+            );
+        }
+
+        progressBar.style.width = `${percent}%`;
+
+        progressLabel.textContent =
+            status.current_stage ||
+            (status.state === "done"
+                ? "Analysis complete"
+                : status.state === "running"
+                    ? "Analysis in progress…"
+                    : "Waiting for analysis");
+
+        elapsedLabel.textContent = formatElapsed(status.elapsed || 0);
+
+        stageList.innerHTML = "";
+
+        stages.forEach((label, index) => {
+            const item = document.createElement("div");
+            item.className = "stage-item";
+
+            const complete =
+                status.state === "done" ||
+                (status.state === "running" && index < stage);
+
+            const current =
+                status.state === "running" && index === stage;
+
+            if (complete) item.classList.add("complete");
+            if (current) item.classList.add("current");
+
+            item.textContent =
+                `${complete ? "✓" : current ? "●" : "○"} ${label}`;
+
+            stageList.appendChild(item);
+        });
+
+        const stateLabels = {
+            idle: "Idle",
+            running: "Running",
+            done: "Complete",
+            error: "Error"
+        };
+
+        $("pipeline-pill").textContent =
+            stateLabels[status.state] || "Unknown";
+
+        $("pipeline-current").textContent =
+            status.current_stage || "Waiting for an analysis";
+
+        if (status.state === "error") {
+            $("pipeline-description").textContent =
+                status.error || "Check the pipeline logs.";
+        } else if (status.state === "done") {
+            $("pipeline-description").textContent =
+                "All configured pipeline scripts finished. Review the report below.";
+        } else {
+            $("pipeline-description").textContent =
+                "The app runs your existing Python scripts in sequence.";
+        }
+
+        if (status.logs) {
+            $("pipeline-logs").textContent = status.logs;
+        }
+    }
+
+    async function loadResults() {
+        try {
+            const response = await fetch("/api/result", {
+                cache: "no-store"
+            });
+
+            if (!response.ok) {
+                throw new Error("Could not load the analysis results.");
+            }
+
+            const data = await response.json();
+            const summary = data.summary || {};
+
+            $("metric-coverage").textContent =
+                summary.coverage || "Not available";
+
+            $("metric-topics").textContent =
+                summary.topics || "Not available";
+
+            $("metric-score").textContent =
+                summary.score || "Not validated";
+
+            $("metric-duration").textContent =
+                summary.duration || "See report";
+
+            const coverageValue = Number(summary.coverage_value);
+
+            $("coverage-bar").style.width =
+                Number.isFinite(coverageValue)
+                    ? `${Math.min(100, Math.max(0, coverageValue))}%`
+                    : "0%";
+
+            if (data.report) {
+                $("report-content").innerHTML =
+                    markdownToSafeHtml(data.report);
+
+                $("report-pill").textContent = "Report available";
+
+                $("report-caption").textContent =
+                    "Generated from the latest pipeline outputs.";
+            } else {
+                $("report-content").innerHTML =
+                    '<div class="empty">No report available yet. Run an analysis first.</div>';
+
+                $("report-pill").textContent = "Waiting for report";
+            }
+
+            if (data.logs) {
+                $("pipeline-logs").textContent = data.logs;
+            }
+        } catch (error) {
+            showStatus(
+                error.message || "Could not load results.",
+                "error"
+            );
+        }
+    }
+
+    // Escape report text before adding formatting, so report content is not
+    // interpreted as arbitrary HTML.
+    function escapeHtml(value) {
+        return value
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    }
+
+    function inlineMarkdown(text) {
+        let safe = escapeHtml(text);
+
+        safe = safe.replace(/`([^`]+)`/g, "<code>$1</code>");
+        safe = safe.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+        safe = safe.replace(/\*(.+?)\*/g, "<em>$1</em>");
+
+        return safe;
+    }
+
+    function markdownToSafeHtml(markdown) {
+        const lines = markdown.replace(/\r\n/g, "\n").split("\n");
+        let html = "";
+        let inList = false;
+        let inTable = false;
+        let tableHeaderWritten = false;
+
+        function closeList() {
+            if (inList) {
+                html += "</ul>";
+                inList = false;
+            }
+        }
+
+        function closeTable() {
+            if (inTable) {
+                html += "</tbody></table>";
+                inTable = false;
+                tableHeaderWritten = false;
+            }
+        }
+
+        function isTableRow(line) {
+            return /^\s*\|.*\|\s*$/.test(line);
+        }
+
+        function getCells(line) {
+            return line
+                .trim()
+                .replace(/^\|/, "")
+                .replace(/\|$/, "")
+                .split("|")
+                .map(cell => cell.trim());
+        }
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+
+            if (isTableRow(line)) {
+                closeList();
+
+                const cells = getCells(line);
+
+                const separator =
+                    cells.length > 0 &&
+                    cells.every(cell => /^:?-{3,}:?$/.test(cell));
+
+                if (separator) {
+                    continue;
+                }
+
+                if (!inTable) {
+                    html += "<table>";
+                    inTable = true;
+                }
+
+                const nextLine = lines[i + 1] || "";
+                const nextCells = isTableRow(nextLine)
+                    ? getCells(nextLine)
+                    : [];
+
+                const nextIsSeparator =
+                    nextCells.length > 0 &&
+                    nextCells.every(cell => /^:?-{3,}:?$/.test(cell));
+
+                if (!tableHeaderWritten && nextIsSeparator) {
+                    html += "<thead><tr>" +
+                        cells.map(cell => `<th>${inlineMarkdown(cell)}</th>`).join("") +
+                        "</tr></thead><tbody>";
+
+                    tableHeaderWritten = true;
+                    i++;
+                } else {
+                    if (!tableHeaderWritten) {
+                        html += "<tbody>";
+                        tableHeaderWritten = true;
+                    }
+
+                    html += "<tr>" +
+                        cells.map(cell => `<td>${inlineMarkdown(cell)}</td>`).join("") +
+                        "</tr>";
+                }
+
+                continue;
+            } else {
+                closeTable();
+            }
+
+            if (/^\s*[-*_]{3,}\s*$/.test(line)) {
+                closeList();
+                html += "<hr>";
+                continue;
+            }
+
+            const heading = line.match(/^\s*(#{1,3})\s+(.+)$/);
+
+            if (heading) {
+                closeList();
+
+                const level = heading[1].length;
+
+                html += `<h${level}>${inlineMarkdown(heading[2])}</h${level}>`;
+                continue;
+            }
+
+            if (/^\s*>\s?/.test(line)) {
+                closeList();
+
+                html += `<blockquote>${inlineMarkdown(
+                    line.replace(/^\s*>\s?/, "")
+                )}</blockquote>`;
+
+                continue;
+            }
+
+            if (/^\s*[-*+]\s+/.test(line)) {
+                if (!inList) {
+                    html += "<ul>";
+                    inList = true;
+                }
+
+                html += `<li>${inlineMarkdown(
+                    line.replace(/^\s*[-*+]\s+/, "")
+                )}</li>`;
+
+                continue;
+            }
+
+            closeList();
+
+            if (line.trim()) {
+                html += `<p>${inlineMarkdown(line)}</p>`;
+            }
+        }
+
+        closeList();
+        closeTable();
+
+        return html || '<div class="empty">The report is empty.</div>';
+    }
+
+    document.querySelectorAll("[data-nav]").forEach(link => {
+        link.addEventListener("click", () => {
+            document.querySelectorAll("[data-nav]").forEach(item => {
+                item.classList.remove("active");
+            });
+
+            link.classList.add("active");
+        });
+    });
+
+    // Load previous output files when the dashboard opens.
+    loadResults();
+
+    // If a job is already running, display its current state.
+    fetch("/api/status", { cache: "no-store" })
+        .then(response => response.json())
+        .then(status => {
+            renderStatus(status);
+
+            if (status.state === "running") {
+                polling = true;
+                analyzeButton.disabled = true;
+                clearButton.disabled = true;
+                analyzeButton.textContent = "Analysis running…";
+                progressWrap.classList.add("show");
+                pollTimer = setInterval(pollStatus, 2500);
+            }
+        })
+        .catch(() => {});
+})();
+</script>
+
+</body>
+</html>
